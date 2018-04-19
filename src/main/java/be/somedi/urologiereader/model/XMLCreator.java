@@ -44,58 +44,58 @@ public class XMLCreator {
     }
 
     public void createNewXMLFiles() throws ParserConfigurationException {
-        List<Person> patients = uroWriter.getPatients();
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final DocumentBuilder builder = factory.newDocumentBuilder();
+        var patients = uroWriter.getPatients();
+        final var factory = DocumentBuilderFactory.newInstance();
+        final var builder = factory.newDocumentBuilder();
 
         patients.forEach(patient -> {
 
-            Message message = new Message();
+            var message = new Message();
 
             if (builder != null) {
                 document = builder.newDocument();
             }
 
-            Element rootEl = document.createElementNS(URI, QUALIFIED_NAME);
+            var rootEl = document.createElementNS(URI, QUALIFIED_NAME);
             document.appendChild(rootEl);
 
-            Element version = document.createElement("Version");
+            var version = document.createElement("Version");
             version.appendChild(document.createTextNode("1"));
             rootEl.appendChild(version);
 
             // MESSAGE HEADER
-            Element msgHeader = document.createElement("MsgHeader");
+            var msgHeader = document.createElement("MsgHeader");
             rootEl.appendChild(msgHeader);
-            Element msgDateTime = document.createElement("MsgDateTime");
+            var msgDateTime = document.createElement("MsgDateTime");
             msgDateTime.appendChild(document.createTextNode(message.getMessageDateTime()));
             msgHeader.appendChild(msgDateTime);
-            Element msgId = document.createElement("MsgID");
+            var msgId = document.createElement("MsgID");
             msgId.appendChild(document.createTextNode(message.getMessageID()));
             msgHeader.appendChild(msgId);
             // Type= Intern algemeen
-            Element archiveType = document.createElement("ArchiveType");
+            var archiveType = document.createElement("ArchiveType");
             archiveType.appendChild(document.createTextNode("20"));
             msgHeader.appendChild(archiveType);
-            Element action = document.createElement("Action");
+            var action = document.createElement("Action");
             action.appendChild(document.createTextNode("InsertUpdate"));
             msgHeader.appendChild(action);
 
             // MESSAGE BODY
-            Element msgBody = document.createElement("MsgBody");
+            var msgBody = document.createElement("MsgBody");
             rootEl.appendChild(msgBody);
 
-            Element from = document.createElement("From");
+            var from = document.createElement("From");
             msgBody.appendChild(from);
-            Element company = document.createElement("CompanyName");
+            var company = document.createElement("CompanyName");
             company.appendChild(document.createTextNode("Somedi Digitaal Archief"));
             from.appendChild(company);
 
-            Element pat = document.createElement("Patient");
+            var pat = document.createElement("Patient");
             msgBody.appendChild(pat);
-            Element patientID = document.createElement("PatientID");
+            var patientID = document.createElement("PatientID");
             patientID.appendChild(document.createTextNode(patient.getInss()));
             pat.appendChild(patientID);
-            Element INSS = document.createElement("INSS");
+            var INSS = document.createElement("INSS");
             if (patient.getInss() != null) {
                 INSS.appendChild(document.createTextNode(patient.getInss()));
             } else {
@@ -103,37 +103,37 @@ public class XMLCreator {
                 INSS.appendChild(document.createTextNode(patient.getInss()));
             }
             pat.appendChild(INSS);
-            Element name = document.createElement("Name");
+            var name = document.createElement("Name");
             name.appendChild(document.createTextNode(patient.getLastName()));
             pat.appendChild(name);
-            Element firstname = document.createElement("FirstName");
+            var firstname = document.createElement("FirstName");
             firstname.appendChild(document.createTextNode(patient.getFirstName()));
             pat.appendChild(firstname);
-            Element dateOfBirth = document.createElement("DateOfBirth");
+            var dateOfBirth = document.createElement("DateOfBirth");
             dateOfBirth.appendChild(document.createTextNode(StringUtils.left(patient.getBirthDate().toString(), SIZE_BIRTHDATE)));
             pat.appendChild(dateOfBirth);
 
-            Element dir = document.createElement("Direction");
+            var dir = document.createElement("Direction");
             dir.appendChild(document.createTextNode("IN"));
             msgBody.appendChild(dir);
 
-            Element actionDateTime = document.createElement("ActionDateTime");
+            var actionDateTime = document.createElement("ActionDateTime");
             actionDateTime.appendChild(document.createTextNode(message.getActionDateTime()));
             msgBody.appendChild(actionDateTime);
 
-            Element subject = document.createElement("Subject");
+            var subject = document.createElement("Subject");
             subject.appendChild(document.createTextNode("Urologie: UDO"));
             msgBody.appendChild(subject);
 
-            Element letter = document.createElement("Letter");
+            var letter = document.createElement("Letter");
             msgBody.appendChild(letter);
-            Element receiver = document.createElement("Receiver");
+            var receiver = document.createElement("Receiver");
             letter.appendChild(receiver);
-            Element INSSr = document.createElement("INSS");
+            var INSSr = document.createElement("INSS");
             // INSS van Maes Caroline
             INSSr.appendChild(document.createTextNode("73010413029"));
             receiver.appendChild(INSSr);
-            Element link = document.createElement("Link");
+            var link = document.createElement("Link");
             link.appendChild(document.createTextNode(patient.getUrlToPDF().replaceAll("\n", "")));
             letter.appendChild(link);
 
@@ -145,11 +145,11 @@ public class XMLCreator {
         System.out.println("Patiënt to write: " + patient);
         if (patient.getInss() != null) {
             System.out.println("Verwerken naar een XML...");
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            var transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = null;
             try {
                 transformer = transformerFactory.newTransformer();
-                DOMSource source = new DOMSource(document);
+                var source = new DOMSource(document);
                 StreamResult result = null;
                 if (patient.getInss().equalsIgnoreCase("No INSS")) {
                     result = new StreamResult(new File(pathToError + "\\Patient_" + patient.getLastName() + "_" + patient.getInss() + ".xml"));

@@ -43,15 +43,13 @@ public class UroWriter {
                     .map(path -> {
                         Person patient = null;
                         try {
-                            Path toPath = Paths.get(pathToRead + backUpPdf(path));
+                            var toPath = Paths.get(pathToRead + backUpPdf(path));
                             if(Files.notExists(toPath)){
                                 Files.createDirectories(toPath);
                             }
                             Files.copy(path, toPath , StandardCopyOption.REPLACE_EXISTING);
                             patient = personService.findByInss(StringUtils.left(path.getFileName().toString(), SIZE_INSS));
-
-                            String urlToPDF = startNameOfFile + backUpPdf(path);
-                            patient.setUrlToPDF(urlToPDF);
+                            patient.setUrlToPDF(startNameOfFile + backUpPdf(path));
 
                             Files.delete(path);
                         } catch (IOException e) {
@@ -67,7 +65,7 @@ public class UroWriter {
     }
 
     private String backUpPdf(Path path){
-        LocalDate now = LocalDate.now();
+        var now = LocalDate.now();
         return "/" + now.getYear()+ "/" + now.getYear() + "-"
                 + now.getMonthValue() + "-" + now.getDayOfMonth() + "/" + path.getFileName().toString().replaceAll(" ", "_");
     }

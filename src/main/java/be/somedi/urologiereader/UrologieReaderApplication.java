@@ -15,10 +15,10 @@ import javax.xml.parsers.ParserConfigurationException;
 public class UrologieReaderApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(UrologieReaderApplication.class, args);
+        var applicationContext = SpringApplication.run(UrologieReaderApplication.class, args);
 
         System.out.println("App started!");
-        XMLCreator xmlCreator = applicationContext.getBean(XMLCreator.class);
+        var xmlCreator = applicationContext.getBean(XMLCreator.class);
         try {
             xmlCreator.createNewXMLFiles();
         } catch (ParserConfigurationException e) {
