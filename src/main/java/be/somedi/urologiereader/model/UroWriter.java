@@ -21,6 +21,8 @@ public class UroWriter {
 
     @Value("${path-read}")
     private Path pathToRead;
+    @Value("${path-error}")
+    private Path pathToError;
     @Value("${startname-file}")
     private String startNameOfFile;
 
@@ -43,18 +45,21 @@ public class UroWriter {
                     .map(path -> {
                         Person patient = null;
                         try {
-                            Path toPath = Paths.get(pathToRead + backUpPdf(path));
-                            if(Files.notExists(toPath)){
-                                Files.createDirectories(toPath);
-                            }
-                            Files.copy(path, toPath , StandardCopyOption.REPLACE_EXISTING);
                             patient = personService.findByInss(StringUtils.left(path.getFileName().toString(), SIZE_INSS));
-
-                            String urlToPDF = startNameOfFile + backUpPdf(path);
-                            patient.setUrlToPDF(urlToPDF);
-
+                            if(patient == null){
+                                Files.copy(path, Paths.get(pathToError +"\\" + path.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                            } else {
+                                Path toPath = Paths.get(pathToRead + backUpPdf(path));
+                                if(Files.notExists(toPath)){
+                                    Files.createDirectories(toPath);
+                                }
+                                Files.copy(path, toPath , StandardCopyOption.REPLACE_EXISTING);
+                                String urlToPDF = startNameOfFile + backUpPdf(path);
+                                patient.setUrlToPDF(urlToPDF);
+                            }
                             Files.delete(path);
-                        } catch (IOException e) {
+
+                        } catch (Exception e){
                             e.printStackTrace();
                         }
                         return patient;

@@ -49,6 +49,9 @@ public class XMLCreator {
         final DocumentBuilder builder = factory.newDocumentBuilder();
 
         patients.forEach(patient -> {
+            if(patient == null){
+                return;
+            }
 
             Message message = new Message();
 
